@@ -1,0 +1,42 @@
+dis of normlization---
+		performance degradation
+....................................
+
+Autoincreament
+	delete----preserve autoincerment/have where clause
+	truncate---starts from base again/not have where clause
+
+for delete
+database--maintains log file
+for truncate----no log file so faster
+
+first day 8 th query
+--->select * from emp e join dept d on e.deptid=d.deptid where(select count(e2.salary) from emp e2 where e2.salary>e.salary and e2.deptid=e.deptid)<5 order by deptname, salary desc;
+
+-->
+Select
+Deptname,e1.ename,e1.salary ,count(*)
+From
+Emp e1 join emp e2
+On e1.deptid=e2.deptid
+join dept d
+On  e1.deptid=d.deptid
+Where  e1.salary<=e2.salary
+Group by Deptname,e1.ename,e1.salary 
+Having count(*)<=5
+Order by deptname,e1.salary desc;
+
+---------------------------------------------------------
+sf_fact===>sf-->stored function
+
+
+-------------------------------------------------
+Q.
+
+create function sf_rec(name varchar)
+
+
+
+
+
+

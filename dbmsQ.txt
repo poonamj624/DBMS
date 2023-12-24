@@ -1,0 +1,168 @@
+with recursive t
+as
+(select 5 num ,5 as fact
+union all
+select num -1 num,fact*(num-1)
+from t where num>2
+)
+select max(fact) factorial from t;
+
+
+**bill of material queries
+		--->eg.partid  -  topMostParent
+
+create table parts (partid varchar(20),)
+
+**windowing functions
+	-->row_number() etc
+
+------
+	we can't write dml cmd in functions so Procedures
+
+*diff bet function & procedure
+1.fn can cl inside procedure but we can't cl procedure inside function ...
+
+
+
+Declare flag int;---> by default null
+
+triggers
+
+Logon Triggers-->means connected to sql
+
+Auditing-->what user-what change at what time
+
+
+-->new value not present in -->delete trigger
+-->old value not present in -->insert trigger
+
+
+uses of log file-->for rollback
+
+WAL---write ahead Logging(means data updated in log file before updating database) 
+
+--------------------------------------------------------------------------
+what is rdbms
+properties of rdbms
+
+foreing fey contraints---to give relation
+
+transaction--
+	insert update delete
+properties---ACID
+
+cdd rule
+
+isolation-by using lock
+consistancy-WAL
+
+view
+in view--dml on views with some restrictions
+
+*normalization
+	decomposition
+    advantages
+properties of normalization
+
+candidate key
+
+primary key(natural key/sarogate key)
+
+diff between fn & proce
+referential integrity
+check contraints
+
+co related sub queries
+
+isolation levels
+-----------------------------------------------------------------------------------------------
+25-11-2018
+
+
+innodb---
+
+
+TRUNCATE can't 
+
+---------------------------------------
+mongodb
+
+guid
+
+
+stored procedure ans
+
+		Select count(*) from dept where deptname like '%HR%';
+
+		Select 1 where exists(Select 1 from emp where ename like '%HR%');
+
+
+which is updated as
+		Set @sqlcmd=concat('Select count(*) into @cnt from ' , tname,' where ' , cname, ' like ''%'  , str,'%''');
+Prepare stmt from @sqlcmd;
+Execute stmt;
+............................................................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+drop procedure sp_srch_string;
+delimiter $$
+create procedure sp_srch_string(str varchar(100))
+begin
+declare cname varchar(100);
+declare tname varchar(100);
+declare flag bit default 0;
+declare c1 cursor for
+select table_name,column_name from information_schema.columns
+where (data_type in ('char','varchar') or data_type like '%text%') and table_schema=database();
+declare continue handler for not found set flag=1;
+drop table if exists tab_col_str;
+create temporary table tab_col_str(tabname varchar(100),colname varchar(100));
+open c1;
+Myloop:loop
+fetch c1 into tname,cname;
+If flag=1 then
+leave myloop;
+else
+Set @sqlcmd=concat('Select count(*) into @cnt from ' , tname,' where ' , cname, ' like ''%'  , str,'%''');
+Prepare stmt from @sqlcmd;
+Execute stmt;
+If @cnt>0 then 
+insert into tab_col_str values(tname,cname);
+End if;
+End if;
+End loop myloop;
+close c1;
+select * from tab_col_str;
+drop table if exists tab_col_str;
+end;
+$$
+
+delimiter ; 
+---------------------------------------------------------------------------------------------
+
+
+phantom reads
+---->ghost read
+
+-----------------------------------------------------------------------------------------
+
+
+
+
