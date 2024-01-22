@@ -1,0 +1,326 @@
+18-11-2023
+
+
+checheck installation-->wnd+r
+
+
+transaction->
+	rollback.....undo
+	commit
+
+DDL--->can't rollback at all
+DML-->
+DCL-->grant(give permission)
+	revoke
+
+
+
+automicity-->either fully commited or fully rollback
+
+difference bet-->
+count(*)  & count(column)
+
+aggregate functions-->
+	does not considers null values
+
+bydefault---inner join
+left outer join-->all rows of left table and only common rows of right
+	left and right table decided based on select * from t1 right join t2 ---->and not by --On t2.c1=t1.c1
+
+
+union all--faster(no need to sort)
+
+
+set operator-->
+		need to have same no.of column
+
+
+order by
+		limit -->offset,limit   e.g.....limit(2,1)  
+---------------------------------------------------------------------------------------------------------
+day-19-11-2023
+Q.10.Display the min and max salary of each dept.
+
+
+
+Select deptname,min(salary) min_sal,max(salary) max_sal
+
+From emp e right join dept d
+
+On e.deptid=d.deptid
+
+Group by deptname;
+..............................................
+Select deptname,min(salary) min_sal,max(salary) max_sal
+
+From emp e join dept d
+
+On e.deptid=d.deptid
+
+Group by deptname;
+..................................................
+
+
+Analytic fn--------->
+row _number
+ranking.....only with select & order by
+.............................
+partition by clause...........ranking within dept separately
+		ranking within dept
+
+
+ranking is diff if & and only if there is duplicate values in it
+1.row_number
+2.rank
+3.dense ranking
+
+Select eid,ename,salary,deptid,
+
+row_number() over(partition by deptid order by salary desc) rn,
+
+rank() over(partition by deptid order by salary desc) rnk,
+
+dense_rank() over(partition by deptid order by salary desc) drnk
+
+From emp_rank;
+
+
+select eid,ename,salary,deptid,
+row_number() over(order by salary desc) rn,
+rank() over(order by salary desc) rnk,
+dense_rank() over(order by salary desc) drnk from emp_eank;
+
+8. Display the deptname, name of top 5 earning employees from each dept.
+//query instead of table name==>inline view
+Select * from (
+
+Select ename,deptname,salary,dense_rank() over(partition by deptname order by salary desc) rn
+
+From emp e join dept d
+
+On e.deptid=d.deptid) as t
+
+Where rn<=5;  
+...........................................
+Select ename,salary,
+
+Case
+
+When salary>=1500 then 'Very High'
+
+When salary>=1000 then 'High'
+
+When salary>=500 then 'Avg'
+
+Else 'Low' end Salary_Band
+
+From emp order by salary;
+..................
+
+create table marks (roll int ,sub varchar(20),marks int);
+
+insert into marks values(1,'M',98),(1,'E',96),(1,'H',99),(2,'M',92),(2,'E',92);
+
+
+insert into marks values(2,'E',94),(2,'H',20),(3,'M',36),(3,'E',37),(3,'H',38);
+//agregate function within swith case
+
+Select roll ,
+
+Case when min(marks)>=35 and avg(marks)>=40  then 'Pass'
+
+Else 'Fail' end Result
+
+From marks
+
+Group by roll;
+
+Select deptname from dept
+
+Where exists (select 1 from emp where emp.deptid=dept.deptid);--->select 1==>to check row exists or not.
+
+
+.......................
+– write a query that shows all the name of dept who have no employee working in it using correlated sub query
+
+Select deptname from dept
+
+Where not exists (select 1 from emp where emp.deptid=dept.deptid);
+.............
+
+
+– write a correlated sub query to return name and salary of all employees whose salary is greater than average salary of all employees
+
+note.
+	we can't  use where with aggregate functions(use having instead)
+select ename,salary from emp o  where exists (select 1 from emp i having o.salary >avg(i.salary));
+
+Select ename,salary from emp o where exists (select 1 from emp i having o.salary>avg(i.salary));
+
+
+.........................................
+view -->does not have any data
+	dml--only one base table
+
+
+note...
+	can't perform dml when query contains group by..etc
+rule 2.....
+	row id ...acts as pointer
+------------------------------------------
+
+
+windowing function...
+select ename, salary,(select sum(salary) from emp i
+
+Where i.salary> o.salary
+
+Or (i.salary= o.salary
+
+and
+
+i.eid<=o.eid)
+
+) running_salary_total
+
+ from emp o
+
+Order by salary desc,eid;
+
+
+Select ename,salary,sum(salary) over(order by salary desc
+
+Rows between unbounded preceding and current row) running_total_salary from emp;
+
+select cid c1,pid c2 from  custprod where c1.cid
+----------------------------------------------------------------------------
+
+Normalzation
+
+1NF
+	reduces dml anomalies(e.g update mob no. when muiltiple mob.no. are there) & reduces duplicates
+Anomalies--chalenges or difficulties
+.............................................................................................................................................................................
+
+
+Assignments-->
+Q-4. Write an SQL query to show one row twice in results from worker table.
+
+select * from 
+(select * from worker union all select * from worker) as a order by asc;
+
+Q-5. Write an SQL query to fetch the first 50% records from worker table.
+ 
+select * from worker where worker_id<=(select count(*)/2 from worker);
+
+
+Q-6. Write an SQL query to fetch the departments that have less than five people in it.
+select department ,count(*) from worker group by department having count(*)<5;
+
+Q-7. Write an SQL query to show all departments along with the number of people in there.
+select department ,count(*) from worker group by department;
+
+Q-8. Write an SQL query to show the last record from worker table.
+select * from worker where worker_id=(select max(worker_id)from worker);
+
+Q-9. Write an SQL query to fetch the first row of a worker  table.
+select * from worker where worker_id=(select min(worker_id)from worker);
+
+Q-10. Write an SQL query to fetch the last five records from worker table.
+	select * from worker order by department_id desc limit 5; 
+
+Q-11. Write an SQL query to print the name of employees having the highest salary in each department.
+
+Q-12. Write an SQL query to fetch three max salaries from a table.
+ 
+	select * from worker  order by salary asc limit 3;
+
+Q-13. Write an SQL query to fetch three min salaries from a table.
+	select * from worker  order by salary desc limit 3;
+
+Q-14. Write an SQL query to fetch nth max salaries from a table.
+	select * from worker order by salary limit n-1,1;
+ 
+	
+----------------------------------------------------------------------------------------------------------------
+
+125 Queries...
+
+1. List all the columns of the Salespeople table.
+     select
+     column_name
+     from
+     information_schema.columns
+     where
+     table_name='Salespeople';	
+.........................................................................
+2. List all customers with a rating of 100.
+	 select * from customers where rating=100;
+
+.......................................................................
+3. Find all records in the Customer table with NULL values in the city column.
+	 select * from customers where city is null;
+...................................................................................
+4. Find the largest order taken by each salesperson on each date.
+
+5. Arrange the Orders table by descending customer number.
+
+
+
+12. Find the largest order taken by each salesperson.
+--->select s.sname,max(o.amt) from salespeople s join orders o on o.snum=s.snum group by s.sname;
+
+16. Find all customers with orders on October 3. 
+---> select onum from orders where odate like '%-03-10';
+
+17. Give the sums of the amounts from the Orders table, grouped by date, eliminating all those 
+dates where the SUM was not at least 2000.00 above the MAX amount. 
+---> select sum(amt) sm from orders group by odate having sm>2000;
+
+19. Write a query that uses the EXISTS operator to extract all salespeople who have customers 
+with a rating of 300. 
+--> select * from salespeople s where exists(select * from customers c where c.snum=s.snum and c.rating=300);
+
+20. Find all pairs of customers having the same rating. 
+--> select * from customers order by rating;
+
+21. Find all customers whose CNUM is 1000 above the SNUM of Serres.
+---> select * from customers where cnum>(select snum+1000 from salespeople where sname='serres');
+
+22. Give the salespeople’s commissions as percentages instead of decimal numbers. 
+--->select snum,sname,city,comm*100 from salespeople ;
+----> select snum,sname,city,concat(round(comm*100,0),'%' )from salespeople ;
+
+24. List the largest orders for October 3, for each salesperson. 
+--->
+
+31. Find all salespeople whose name starts with ‘P’ and the fourth character is ‘l’.
+--> select * from salespeople where sname like 'p___i%';
+
+29. Find salespeople who have multiple customers. 
+--->select snum from customers group by snum having count(snum)>1;
+
+30. Find salespeople with customers located in their city. 
+--> select s.sname,s.city from salespeople s join customers c on s.city=c.city where s.city=c.city;
+
+
+33. Find the largest orders for Serres and Rifkin. 
+---> select snum, max(amt) from orders group by snum having snum in (select snum from salespeople where sname in('serres','rifkin'));
+
+34. Extract the Salespeople table in the following order : SNUM, SNAME, COMMISSION, CITY. 
+ --->select snum SNUM, sname SNAME, comm COMMISSION, city CITY from salespeople;
+
+35. Select all customers whose names fall in between ‘A’ and ‘G’ alphabetical range. 
+
+ -->select * from customers where cname between 'A%'and 'G%';
+
+36. Select all the possible combinations of customers that you can assign. 
+---> select s.sname,c.cname from salespeople s join customers c on s.snum=c.snum;
+
+
+37. Select all orders that are greater than the average for October 4. 
+
+ select * from orders where amt>(Select avg(amt) from orders group by odate having odate like '%-04-10');
+
+
+

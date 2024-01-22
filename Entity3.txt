@@ -1,0 +1,182 @@
+Scaffold-DbContext "Data Source=(localdb)\ProjectModels;Initial Catalog=HR;Integrated Security=True;" Microsoft.EntityFrameworkCore.SqlServer –OutputDir Model –Context StudentContext –tables "Student", "Grade" -DataAnnotations
+------------------------------------------------------------------------------------------------------------------
+
+
+ //controler class(entry lever)---service layer class---DB layer class()
+
+
+Don't write logic code in entry level class.its not good practice.
+
+
+ServiceCollection--->
+		AddSingleton(Only one obj is shared)   <--no more use
+		AddTransient(n number of obj)
+		AddScope(per request obj)
+
+We are not going to create any obj--->We request for obj
+		service.getService()
+
+
+controller(bookcontroler......interface ref is injected in bookController...........So no need to change in BookController class) class shoud not have any bussiness logic......
+
+write logic in service class(injected Sample class obj)........
+
+
+AddBook is comunicating with Database
+
+------------------------------------------------------------------------------------------------------------------	  		MVC
+web----->model view controller
+
+empController(index method by default-->from)
+
+
+controller is intelligent
+
+model--->poco classes
+controller-->takes data from service class
+------------------------------------------------
+
+part of the data goes to layout page
+
+flow.......
+home controller----index()----viewstart------layout
+
+
+strated as console app---->builder.build(Web application get called)
+
+view.......cshtml files
+........................................................................................................................................
+
+
+Q.create mvc application 
+1.create poco class customer id ,name,mobno,bill Amount
+2.create interface icustomer -- IEnumerable customer getAllcustomer
+3create class serviceCustomer/impliments Icustomer
+4.create a controller 
+5.crete constructor and inject interface reference
+6 write action method Index ,which will retun list of customer
+7.generate view
+8.in program.cs file call AddTransint
+When u run it should disp list of customer
+---------------------------------------------------------------------------------------------------
+
+
+
+9-11-2023
+
+revision 8-11-2023
+
+entity--ORM(MAPPING DATA-automatic)--advatage...caching,lazy loading
+
+approch
+1.code first(we use migration--snapshot,migration file )...update db(applied to db(can't remove after that))-----mostly uses--changes becomes easier
+methods...up(generate table in db),down(undo)...history gets created(only applied file are in migration)
+2.DB first(reverse engg)..
+---------------------------------------------------------------------------------------------
+Db communication---uses Repository design patter(orm) & DI(no need to do any change in controller class)	
+
+run time error---null pointer(add transient,)
+
+-------------------------------------------------------------------------------------------------------------
+
+
+
+Task-->
+complete mock repositorywith mvc(AddSingleton,change to transient and observe the output)
+Iin m/m crud.....
+
+...........................
+Que
+create a poco class author,books(one author can write more books)
+follow the conventions one to many(navigation property--primar-forie) 
+write interface crud book
+create service class to implem crud
+create service class 
+create book controller & complete crud
+
+1.download dll
+2.put connection string in appsetting
+3.write poco class & dbcontext class
+4.open program file & config 2 service(1.dbcontext, 2.service class)
+5.add migration
+6.update db
+7.enter data in author table first & then in book table
+
+
+controller---for book
+
+read
+diff bet mvc & mvc core
+
+
+----------------------------------------------------------------------------------------------------------------
+10-11-2023
+(revision)
+1.confirguration knows how many obj to create
+2.middleware
+
+after build web app gets created till its its console app
+
+web app use to config http pipeline
+
+http req(call to main)---
+
+
+comparision(interview) diff
+*use -map-run
+run(short circuit)
+
+view(load _view)---n goes to layout
+
+wwwroot(folder)
+	have all static method
+
+----------------------------------------------------
+controller processes data coming from view------give returns it back
+
+config Routing---->
+url--route--goes to controllers action method
+
+................
+bydefault index class gets called/load
+.....................................
+hiperlink......
+	a tag(anker tag) & helper method(html.)
+	
+DI,repository design patter(sample context class)
+
+
+
+
+
+
+task..
+create poco class cutomer with  id, name, pwd, addr, DOB, age, photo(string)(img.jpg/png) ,URL,Email,mob,gender,remender
+*Disable java script on client side and reRun the application
+
+
+
+-------------------------------------
+run yr app throgh http observe port no
+iis
+
+right click on project--open debug
+
+-----------------------------------------------------------------------------------------
+thread...
+AsyncAwake--non blocking programming(work better in single core also)
+---------------------------------------------------------------------------------------
+cookie
+Task---
+create poco class user login having Uname pwd ,bool Remember
+create form using scophold
+when user submit--create cookie
+3.create action method read cookie,which will disp cookie data
+When u go back create (get method) it should cookie
+
+.......................................................................................................................................
+
+-........................................................................................................................................
+
+
+
